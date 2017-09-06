@@ -1,5 +1,5 @@
 ﻿using System;
-using SharpNet.Maths;
+using SharpNet.Classes.Maths;
 
 namespace SharpNetDebug
 {
@@ -20,7 +20,13 @@ namespace SharpNetDebug
             Console.WriteLine("Debugging SharpNet.");
 
             #region DEBUG_CODE
-
+            Vector v = new Vector(4);
+            v.RandomUniform(-1, 1);
+            Console.WriteLine(v.ToDetailedString());
+            Vector w = new Vector(4);
+            w.RandomUniform(-1, 1);
+            Console.WriteLine(w.ToDetailedString());
+            Console.WriteLine(v.Dot(w));
             #endregion
 
             Console.WriteLine("Debugging has finished.  Press ENTER to exit.");

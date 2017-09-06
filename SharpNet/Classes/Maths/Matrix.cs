@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharpNet.Maths
+namespace SharpNet.Classes.Maths
 {
 
     /// <summary>
