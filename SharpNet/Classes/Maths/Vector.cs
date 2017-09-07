@@ -11,6 +11,8 @@ namespace SharpNet.Classes.Maths
     public class Vector
     {
 
+        private static Random random = new Random();
+
         /// <summary>
         /// Elementwise addition of two vectors.
         /// </summary>
@@ -145,7 +147,6 @@ namespace SharpNet.Classes.Maths
         /// <param name="max"></param>
         public void RandomUniform(double min, double max)
         {
-            Random random = new Random();
             for (int i = 0; i < Length; i++)
             {
                 this[i] = min + random.NextDouble() * (max - min);
@@ -159,7 +160,6 @@ namespace SharpNet.Classes.Maths
         /// <param name="standardDeviation"></param>
         public void RandomGaussian(double mean, double standardDeviation)
         {
-            Random random = new Random();
             for (int i = 0; i < Length; i++)
             {
                 // Sampling from a Gaussian requires uniform numbers in the range (0, 1], but
