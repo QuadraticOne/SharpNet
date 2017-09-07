@@ -25,6 +25,8 @@ namespace SharpNet.Classes.Architecture.Layer.Layers
             }
         }
 
+        // TODO: override input setter
+
         private Matrix _preActivation;
         public Matrix PreActivation
         {
@@ -36,7 +38,7 @@ namespace SharpNet.Classes.Architecture.Layer.Layers
 
             protected set
             {
-                outputIsAccurate = false;
+                outputIsAccurate = false;  // TODO: just set output to void
                 _preActivation = value;
             }
         }
@@ -94,6 +96,38 @@ namespace SharpNet.Classes.Architecture.Layer.Layers
             newMatrix[0, 0] = 1;
             for (int i = 0; i < matrix.Rows; i++) newMatrix[i + 1, 0] = matrix[i, 0];
             return newMatrix;
+        }
+
+        /// <summary>
+        /// A fully connected feedforward layer which is almost identical to a regular one, but
+        /// which allows the use of activation functions individual to each neuron, as opposed to a
+        /// single activation function for the whole layer.
+        /// </summary>
+        public class IndividualActivations : FeedForwardLayer
+        {
+
+            // TODO: override update function
+
+            private IActivationFunction[] activations;
+
+            /// <summary>
+            /// Instantiate a feedforward layer with individual activations.
+            /// </summary>
+            /// <param name="inputs"></param>
+            /// <param name="outputs"></param>
+            public IndividualActivations(int inputs, int outputs) : base(inputs, outputs)
+            {
+                Inputs = inputs;
+                Outputs = outputs;
+
+                activations = new IActivationFunction[Outputs];
+
+                Input = new Matrix(Inputs, 1);
+                Output = new Matrix(Outputs, 1);
+
+                Weights = new Matrix(Outputs, Inputs + 1);
+            }
+
         }
 
     }
