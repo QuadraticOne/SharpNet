@@ -1,5 +1,7 @@
 ﻿using System;
 using SharpNet.Classes.Maths;
+using SharpNet.Classes.Architecture.Layer.Layers;
+using SharpNet.Classes.Architecture.ActivationFunction;
 
 namespace SharpNetDebug
 {
@@ -20,13 +22,22 @@ namespace SharpNetDebug
             Console.WriteLine("Debugging SharpNet.");
 
             #region DEBUG_CODE
-            Vector v = new Vector(4);
-            v.RandomUniform(-1, 1);
-            Console.WriteLine(v.ToDetailedString());
-            Vector w = new Vector(4);
-            w.RandomUniform(-1, 1);
-            Console.WriteLine(w.ToDetailedString());
-            Console.WriteLine(v.Dot(w));
+            FeedForwardLayer ffl = new FeedForwardLayer(4, 4);
+
+            ffl.Activation = new ActivationFunctions.Sigmoid();
+
+            ffl.Weights.RandomUniform(-1, 1);
+            Matrix m = new Matrix(4, 1);
+            m.RandomUniform(-1, 1);
+            ffl.Input = m;
+            Console.WriteLine(ffl.Input.ToDetailedString());
+            Console.WriteLine(ffl.Weights.ToDetailedString());
+
+            Matrix pre = ffl.PreActivation;
+            Console.WriteLine(pre.ToDetailedString());
+
+            Matrix oup = ffl.Output;
+            Console.WriteLine(oup.ToDetailedString());
             #endregion
 
             Console.WriteLine("Debugging has finished.  Press ENTER to exit.");
