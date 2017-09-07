@@ -11,6 +11,8 @@ namespace SharpNet.Classes.Maths
     public class Matrix
     {
 
+        private static Random random = new Random();
+
         /// <summary>
         /// Elementwise addition of two matrices.
         /// </summary>
@@ -325,13 +327,31 @@ namespace SharpNet.Classes.Maths
         }
 
         /// <summary>
+        /// Update the value of each element of the matrix according to a function, which takes the
+        /// value of that element as input.
+        /// </summary>
+        /// <param name="function"></param>
+        /// <returns></returns>
+        public Matrix ApplyPiecewiseFunction(Func<double, double> function)
+        {
+            Matrix newMatrix = new Matrix(Rows, Columns);
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    newMatrix[i, j] = function(matrix[i, j]);
+                }
+            }
+            return newMatrix;
+        }
+
+        /// <summary>
         /// Randomise the elements of the matrix uniformly within a given range.
         /// </summary>
         /// <param name="min"></param>
         /// <param name="max"></param>
         public void RandomUniform(double min, double max)
         {
-            Random random = new Random();
             for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < Columns; j++)
@@ -348,7 +368,6 @@ namespace SharpNet.Classes.Maths
         /// <param name="standardDeviation"></param>
         public void RandomGaussian(double mean, double standardDeviation)
         {
-            Random random = new Random();
             for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < Columns; j++)
