@@ -2,6 +2,7 @@
 using SharpNet.Classes.Maths;
 using SharpNet.Classes.Architecture.Layer.Layers;
 using SharpNet.Classes.Architecture.ActivationFunction;
+using SharpNet.Classes.NeuralNetwork.NeuralNetworks;
 
 namespace SharpNetDebug
 {
@@ -22,23 +23,12 @@ namespace SharpNetDebug
             Console.WriteLine("Debugging SharpNet.");
 
             #region DEBUG_CODE
-            FeedForwardLayer ffl = new FeedForwardLayer(4, 4);
-
-            ffl.Activation = new ActivationFunctions.Sigmoid();
-
-            ffl.Weights.RandomUniform(-1, 1);
-            Matrix m = new Matrix(4, 1);
-            m.RandomUniform(-1, 1);
-            ffl.Input = m;
-            Console.WriteLine(ffl.Input.ToDetailedString());
-            Console.WriteLine(ffl.Weights.ToDetailedString());
-
-            Matrix pre = ffl.PreActivation;
-            Console.WriteLine(pre.ToDetailedString());
-
-            Matrix oup = ffl.Output;
-            Console.WriteLine(oup.ToDetailedString());
-            #endregion
+            FeedForwardNetwork ffn = new FeedForwardNetwork(3, 10);
+            IActivationFunction sig = new ActivationFunction.Sigmoid();
+            ffn.AddMultipleLayers(2, 8, sig).AddOutputLayer(sig);
+            ffn.Input = new Matrix(3, 1);
+            Console.WriteLine(ffn.Output.ToDetailedString());
+            #endregion  // DEBUG_CODE
 
             Console.WriteLine("Debugging has finished.  Press ENTER to exit.");
             Console.Read();
