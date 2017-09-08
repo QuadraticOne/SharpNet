@@ -1,5 +1,4 @@
-﻿using SharpNet.Classes.Architecture.ActivationFunction;
-using SharpNet.Classes.Maths;
+﻿using SharpNet.Classes.Maths;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,8 +12,8 @@ namespace SharpNet.Classes.Architecture.Layer.Layers
     public class FeedForwardLayer : Layer
     {
 
-        private IActivationFunction _activation;
-        public IActivationFunction Activation
+        private ActivationFunction _activation;
+        public ActivationFunction Activation
         {
             get { return _activation; }
 
@@ -108,7 +107,7 @@ namespace SharpNet.Classes.Architecture.Layer.Layers
 
             // TODO: override update function
 
-            private IActivationFunction[] activations;
+            private ActivationFunction[] activations;
 
             /// <summary>
             /// Instantiate a feedforward layer with individual activations.
@@ -120,7 +119,7 @@ namespace SharpNet.Classes.Architecture.Layer.Layers
                 Inputs = inputs;
                 Outputs = outputs;
 
-                activations = new IActivationFunction[Outputs];
+                activations = new ActivationFunction[Outputs];
 
                 Input = new Matrix(Inputs, 1);
                 Output = new Matrix(Outputs, 1);

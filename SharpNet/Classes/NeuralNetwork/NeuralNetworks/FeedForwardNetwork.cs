@@ -1,8 +1,8 @@
-﻿using SharpNet.Classes.Architecture.ActivationFunction;
-using SharpNet.Classes.Architecture.Layer.Layers;
+﻿using SharpNet.Classes.Architecture.Layer.Layers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SharpNet.Classes.Maths;
 
 namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
 {
@@ -34,7 +34,7 @@ namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
         /// <param name="nodes"></param>
         /// <param name="activation"></param>
         /// <returns></returns>
-        public FeedForwardNetwork AddHiddenLayer(int nodes, IActivationFunction activation)
+        public FeedForwardNetwork AddHiddenLayer(int nodes, ActivationFunction activation)
         {
             layers.Add(new FeedForwardLayer(
                 (layers.Count == 0 ? Inputs : layers[layers.Count - 1].Outputs), nodes)
@@ -50,7 +50,7 @@ namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
         /// </summary>
         /// <param name="activation"></param>
         /// <returns></returns>
-        public FeedForwardNetwork AddOutputLayer(IActivationFunction activation)
+        public FeedForwardNetwork AddOutputLayer(ActivationFunction activation)
         {
             layers.Add(new FeedForwardLayer(layers[layers.Count - 1].Outputs,
                 Outputs)
@@ -70,7 +70,7 @@ namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
         /// <param name="activation"></param>
         /// <returns></returns>
         public FeedForwardNetwork AddMultipleLayers(int layers, int nodesPerLayer,
-            IActivationFunction activation)
+            ActivationFunction activation)
         {
             for (int i = 0; i < layers; i++)
             {
