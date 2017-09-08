@@ -346,6 +346,17 @@ namespace SharpNet.Classes.Maths
         }
 
         /// <summary>
+        /// Zero the elements of the matrix.
+        /// </summary>
+        public void Zero()
+        {
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++) matrix[i, j] = 0;
+            }
+        }
+
+        /// <summary>
         /// Randomise the elements of the matrix uniformly within a given range.
         /// </summary>
         /// <param name="min"></param>

@@ -141,6 +141,14 @@ namespace SharpNet.Classes.Maths
         }
 
         /// <summary>
+        /// Set each element of the vector to 0.
+        /// </summary>
+        public void Zero()
+        {
+            for (int i = 0; i < Length; i++) vector[i] = 0;
+        }
+
+        /// <summary>
         /// Randomise the elements of the vector uniformly within a given range.
         /// </summary>
         /// <param name="min"></param>
