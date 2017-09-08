@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Classes\Architecture\Neuron\" />
-    <Folder Include="Classes\NeuralNetworkTrainer\" />
   </ItemGroup>
 
 </Project>

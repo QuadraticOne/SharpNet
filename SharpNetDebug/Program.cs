@@ -1,8 +1,8 @@
 ﻿using System;
 using SharpNet.Classes.Maths;
-using SharpNet.Classes.Architecture.Layer.Layers;
-using SharpNet.Classes.Architecture.ActivationFunction;
+using SharpNet.Classes.Architecture.NetworkLayer.Layers;
 using SharpNet.Classes.NeuralNetwork.NeuralNetworks;
+using SharpNet.Classes.Data;
 
 namespace SharpNetDebug
 {
@@ -23,11 +23,7 @@ namespace SharpNetDebug
             Console.WriteLine("Debugging SharpNet.");
 
             #region DEBUG_CODE
-            FeedForwardNetwork ffn = new FeedForwardNetwork(3, 10);
-            IActivationFunction sig = new ActivationFunction.Sigmoid();
-            ffn.AddMultipleLayers(2, 8, sig).AddOutputLayer(sig);
-            ffn.Input = new Matrix(3, 1);
-            Console.WriteLine(ffn.Output.ToDetailedString());
+
             #endregion  // DEBUG_CODE
 
             Console.WriteLine("Debugging has finished.  Press ENTER to exit.");

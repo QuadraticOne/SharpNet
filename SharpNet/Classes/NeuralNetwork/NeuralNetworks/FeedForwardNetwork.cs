@@ -1,4 +1,4 @@
-﻿using SharpNet.Classes.Architecture.Layer.Layers;
+﻿using SharpNet.Classes.Architecture.NetworkLayer.Layers;
 using System;
 using System.Collections.Generic;
 using System.Text;
