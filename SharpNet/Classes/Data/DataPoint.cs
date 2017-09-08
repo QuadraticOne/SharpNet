@@ -13,7 +13,10 @@ namespace SharpNet.Classes.Data
     {
 
         public double[] input;
-        public int? category;
+        /// <summary>
+        /// The class to which the training point belongs.  A value of -1 denotes no class.
+        /// </summary>
+        public int category;
         public double[] output;
 
         /// <summary>
@@ -25,7 +28,7 @@ namespace SharpNet.Classes.Data
         {
             this.input = input;
             this.output = output;
-            category = null;
+            category = -1;  // -1 denotes no class
         }
 
         /// <summary>
@@ -48,7 +51,7 @@ namespace SharpNet.Classes.Data
         {
             this.input = input;
             output = null;
-            category = null;
+            category = -1;  // -1 denotes no class
         }
 
     }
