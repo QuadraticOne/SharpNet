@@ -89,6 +89,23 @@ namespace SharpNet.Classes.Data
         }
 
         /// <summary>
+        /// Returns a collation of all unassigned, training, validation, and test data points.
+        /// </summary>
+        /// <returns></returns>
+        public DataPoint[] GetWholeSet()
+        {
+            DataPoint[] set = new DataPoint[unassigned.Count + TrainingSet.Length +
+                ValidationSet.Length + TestSet.Length];
+
+            TrainingSet.CopyTo(set, 0);
+            ValidationSet.CopyTo(set, TrainingSet.Length);
+            TestSet.CopyTo(set, TrainingSet.Length + ValidationSet.Length);
+            unassigned.CopyTo(set, set.Length - unassigned.Count);
+
+            return set;
+        }
+
+        /// <summary>
         /// Return a training example by index.
         /// </summary>
         /// <param name="index"></param>
@@ -179,6 +196,32 @@ namespace SharpNet.Classes.Data
             DataPoint[] subset = new DataPoint[count];
             for (int i = 0; i < subset.Length; i++) subset[i] = GetRandomTestExample();
             return subset;
+        }
+
+        /// <summary>
+        /// Normalise the data points in this set according to a data normaliser.  If the data
+        /// normaliser has not been fit to this set, that will be done automatically.
+        /// </summary>
+        /// <param name="dataNormaliser"></param>
+        public void NormaliseBy(IDataNormaliser dataNormaliser)
+        {
+            if (!dataNormaliser.HasBeenFit()) dataNormaliser.Fit(this.GetWholeSet());
+
+            foreach (DataPoint dataPoint in GetWholeSet()) dataNormaliser.Normalise(dataPoint);
+        }
+
+        /// <summary>
+        /// Denormalise the data points in this set according to a data normaliser.  If the data
+        /// normaliser has not been fit, this will throw an error; it makes no sense to fit a model
+        /// to data, then immediately denormalise them according to it.
+        /// </summary>
+        /// <param name="dataNormaliser"></param>
+        public void DenormaliseBy(IDataNormaliser dataNormaliser)
+        {
+            if (!dataNormaliser.HasBeenFit()) throw new OperationCanceledException(
+                "Cannot denormalise data according to a normaliser that has not been fit.");
+
+            foreach (DataPoint dataPoint in GetWholeSet()) dataNormaliser.Denormalise(dataPoint);
         }
 
         /// <summary>
