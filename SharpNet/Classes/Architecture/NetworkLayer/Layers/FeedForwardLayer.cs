@@ -1,5 +1,6 @@
 ﻿using SharpNet.Classes.Maths;
 using SharpNet.Classes.Maths.Error;
+using SharpNet.Classes.NeuralNetworkTrainer;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -77,7 +78,8 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
             /// a reference to the gradient object of the next layer.
             /// </summary>
             /// <param name="nextLayerGradient"></param>
-            public abstract void Backpropagate(Gradient nextLayerGradient);
+            public abstract void Backpropagate(Gradient nextLayerGradient,
+                List<IRegulariser> regularisers);
 
             /// <summary>
             /// Update all error derivatives, and accumulate the appropriate weight deltas, given
@@ -86,7 +88,8 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
             /// </summary>
             /// <param name="target"></param>
             /// <param name="lossFunction"></param>
-            public abstract void Backpropagate(Matrix target, ILossFunction lossFunction);
+            public abstract void Backpropagate(Matrix target, ILossFunction lossFunction,
+                List<IRegulariser> regularisers);
 
         }
 
@@ -229,7 +232,8 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                 /// given a reference to the gradient object of the next layer.
                 /// </summary>
                 /// <param name="nextLayerGradient"></param>
-                public override void Backpropagate(FeedForwardLayer.Gradient nextLayerGradient)
+                public override void Backpropagate(FeedForwardLayer.Gradient nextLayerGradient,
+                    List<IRegulariser> regularisers)
                 {
                     // Rate of change of output with respect to corresponding pre-activation
                     Vector preActivationOutputDerivatives = new Vector(thisLayer.Outputs);
@@ -243,7 +247,10 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                         // Calculate pre-activation derivatives
                         preActivationOutputDerivatives[i] = denseReference.Activation.Derivative(
                             denseReference.PreActivation[i, 0], i);
+                    }
 
+                    for (int i = 0; i < thisLayer.Inputs; i++)
+                    {
                         // Calculate input error derivatives; the product of the derivative of the
                         // pre-activation wrt. the input and the derivative of the output wrt. the
                         // pre-activation, summed over all output neurons in this layer
@@ -262,10 +269,15 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                         for (int j = 0; j < denseReference.Weights.Columns; j++)
                             // j -> input neurons
                         {
+                            double regulariserDelta = 0;
+                            foreach (IRegulariser regulariser in regularisers)
+                                regulariserDelta += regulariser.LossDerivative(
+                                    denseReference.Weights[i, j]);
+
                             weightDeltas[i, j] = weightDeltas[i, j] +
                                 outputErrorDerivatives[i] *
                                 preActivationOutputDerivatives[i] *
-                                thisLayer.Input[j, 0];
+                                thisLayer.Input[j, 0] + regulariserDelta;
                         }
                     }
                 }
@@ -277,7 +289,8 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                 /// </summary>
                 /// <param name="target"></param>
                 /// <param name="lossFunction"></param>
-                public override void Backpropagate(Matrix target, ILossFunction lossFunction)
+                public override void Backpropagate(Matrix target, ILossFunction lossFunction,
+                    List<IRegulariser> regularisers)
                 {
                     // Rate of change of output with respect to corresponding pre-activation
                     Vector preActivationOutputDerivatives = new Vector(thisLayer.Outputs);
@@ -311,10 +324,15 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                         for (int j = 0; j < denseReference.Weights.Columns; j++)
                         // j -> input neurons
                         {
+                            double regulariserDelta = 0;
+                            foreach (IRegulariser regulariser in regularisers)
+                                regulariserDelta += regulariser.LossDerivative(
+                                    denseReference.Weights[i, j]);
+
                             weightDeltas[i, j] = weightDeltas[i, j] +
                                 outputErrorDerivatives[i] *
                                 preActivationOutputDerivatives[i] *
-                                thisLayer.Input[j, 0];
+                                thisLayer.Input[j, 0] + regulariserDelta;
                         }
                     }
                 }
@@ -389,7 +407,8 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                 /// given a reference to the gradient object of the next layer.
                 /// </summary>
                 /// <param name="nextLayerGradient"></param>
-                public override void Backpropagate(FeedForwardLayer.Gradient nextLayerGradient)
+                public override void Backpropagate(FeedForwardLayer.Gradient nextLayerGradient,
+                    List<IRegulariser> regularisers)
                 {
                     throw new NotImplementedException();
                 }
@@ -411,7 +430,8 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                 /// </summary>
                 /// <param name="target"></param>
                 /// <param name="lossFunction"></param>
-                public override void Backpropagate(Matrix target, ILossFunction lossFunction)
+                public override void Backpropagate(Matrix target, ILossFunction lossFunction,
+                    List<IRegulariser> regularisers)
                 {
                     throw new NotImplementedException();
                 }
