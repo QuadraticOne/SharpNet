@@ -21,6 +21,7 @@ namespace SharpNet.Classes.NeuralNetworkTrainer
         {
 
             private double min, max;
+            private bool zeroBias;
 
             /// <summary>
             /// Create a uniform initialiser, which samples weights from a uniform distribution
@@ -28,10 +29,11 @@ namespace SharpNet.Classes.NeuralNetworkTrainer
             /// </summary>
             /// <param name="min"></param>
             /// <param name="max"></param>
-            public Uniform(double min, double max)
+            public Uniform(double min, double max, bool zeroBias)
             {
                 this.min = min;
                 this.max = max;
+                this.zeroBias = zeroBias;
             }
 
             /// <summary>
@@ -47,6 +49,14 @@ namespace SharpNet.Classes.NeuralNetworkTrainer
                         if (layer is FeedForwardLayer.Dense)
                         {
                             ((FeedForwardLayer.Dense)layer).Weights.RandomUniform(min, max);
+                            if (zeroBias)
+                            {
+                                for (int i = 0; i < ((FeedForwardLayer.Dense)
+                                    layer).Weights.Rows; i++)
+                                {
+                                    ((FeedForwardLayer.Dense)layer).Weights[i, 0] = 0;
+                                }
+                            }
                         }
 
                         if (layer is FeedForwardLayer.Sparse)

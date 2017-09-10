@@ -14,6 +14,9 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
     public abstract class FeedForwardLayer : Layer
     {
 
+        public static int printed = 0;
+        public static int printAt = 500;
+
         // TODO: override input setter
 
         /// <summary>
@@ -200,6 +203,10 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                     denseReference.Weights = denseReference.Weights -
                         (learningRate * weightDeltas);
 
+                    // &debug
+                    if (printed == printAt) Console.WriteLine(weightDeltas.ToDetailedString());
+                    printed++;
+
                     weightDeltas.Zero();
                     inputErrorDerivatives.Zero();
                     outputErrorDerivatives.Zero();
@@ -305,12 +312,15 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                         // Calculate pre-activation derivatives
                         preActivationOutputDerivatives[i] = denseReference.Activation.Derivative(
                             denseReference.PreActivation[i, 0], i);
+                    }
 
+                    for (int i = 0; i < thisLayer.Inputs; i++)  // i -> input neuron
+                    {
                         // Calculate input error derivatives; the product of the derivative of the
                         // pre-activation wrt. the input and the derivative of the output wrt. the
                         // pre-activation, summed over all output neurons in this layer
                         double inputErrorDerivative = 0;
-                        for (int j = 0; j < thisLayer.Outputs; j++)
+                        for (int j = 0; j < thisLayer.Outputs; j++)  // j -> output neuron
                         {
                             inputErrorDerivative += denseReference.Weights[j, i] *
                                 preActivationOutputDerivatives[j] * outputErrorDerivatives[j];

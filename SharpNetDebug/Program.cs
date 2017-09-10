@@ -16,6 +16,8 @@ namespace SharpNetDebug
     public class Program
     {
 
+        public static int printed = 0;
+
         /// <summary>
         /// Debugs SharpNet.  Code added here will be run when the project is run.
         /// </summary>
@@ -28,38 +30,42 @@ namespace SharpNetDebug
             #region DEBUG_CODE
 
             // Create data set
-            DataSet.Regression ds = new DataSet.Regression(1, 1);  // Models the function f(x) = x, x ~ [0, 1]
+            DataSet.Regression ds = new DataSet.Regression(2, 1);  // XOR
+            ds.AddDataPoint(new double[] { 0, 0 }, new double[] { 0 });
+            ds.AddDataPoint(new double[] { 1, 0 }, new double[] { 1 });
+            ds.AddDataPoint(new double[] { 0, 1 }, new double[] { 1 });
+            ds.AddDataPoint(new double[] { 1, 1 }, new double[] { 0 });
             Random rand = new Random();
-            for (int i = 0; i < 10000; i++)
+            /*for (int i = 0; i < 10000; i++)
             {
                 double d = rand.NextDouble();
                 ds.AddDataPoint(new double[] { d }, new double[] { d });
-            }
-            ds.AssignDataPoints(0.7, 0.2, 0.1);
+            }*/
+            ds.AssignDataPoints(1, 0, 0);
             Console.WriteLine("\nData set split in the ratio {0}, {1}, {2}.\n",
                 ds.TrainingSet.Length, ds.ValidationSet.Length, ds.TestSet.Length);
 
             // Create neural net
-            FeedForwardNetwork ffn = new FeedForwardNetwork(1, 1);
-            ffn.AddHiddenLayer(8, new ActivationFunction.Sigmoid());
-            ffn.AddHiddenLayer(8, new ActivationFunction.Sigmoid());
+            FeedForwardNetwork ffn = new FeedForwardNetwork(2, 1);
+            ffn.AddHiddenLayer(4, new ActivationFunction.Sigmoid());
             ffn.AddOutputLayer(new ActivationFunction.Sigmoid());
 
             // Create batch selector
-            DataPoint[] select(DataSet data) => ds.GetRandomTrainingSubset(32);
+            DataPoint[] select(DataSet data) => ds.GetRandomTrainingSubset(4);
 
             // Create backprop trainer
             BackpropagationTrainer t = new BackpropagationTrainer
             {
+                stochastic = false,
                 IndividualLearningRates = false,
-                LearningRate = 0.01,
-                initialiser = new Initialiser.Uniform(-0.5, 0.5),
+                LearningRate = 0.005,
+                initialiser = new Initialiser.Uniform(-0.2, 0.2, false),
                 lossFunction = new LossFunction.SquaredError(),
                 batchSelector = new BackpropagationTrainer.BatchSelector(select),
-                evaluationFrequency = 1
+                evaluationFrequency = 2000
             };
 
-            t.terminationConditions.Add(new TerminationCondition.EpochLimit(100));
+            t.terminationConditions.Add(new TerminationCondition.EpochLimit(50000));
             t.Train(ffn, ds);
 
             // Troubleshoot trainer
@@ -72,12 +78,18 @@ namespace SharpNetDebug
             Console.WriteLine();
 
             // Manual tests
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 1; i++)
             {
-                Matrix m = new Matrix(1, 1);
-                m[0, 0] = 0.1 * i;
+                Matrix m = new Matrix(2, 1);
+                m[0, 0] = (rand.NextDouble() > 0.5) ? 1 : 0;
+                m[1, 0] = (rand.NextDouble() > 0.5) ? 1 : 0;
                 ffn.Input = m;
-                Console.WriteLine(ffn.Output.ToDetailedString());
+                Console.WriteLine(ffn.Layers[0].Input.ToDetailedString());
+                Console.WriteLine(((FeedForwardLayer.Dense)ffn.Layers[0]).Weights.ToDetailedString());
+                Console.WriteLine(ffn.Layers[0].Output.ToDetailedString());
+                Console.WriteLine(ffn.Layers[1].Input.ToDetailedString());
+                Console.WriteLine(((FeedForwardLayer.Dense)ffn.Layers[1]).Weights.ToDetailedString());
+                Console.WriteLine(ffn.Layers[1].Output.ToDetailedString());
             }
 
             Console.WriteLine();

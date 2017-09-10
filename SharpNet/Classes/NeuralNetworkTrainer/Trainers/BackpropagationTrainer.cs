@@ -418,6 +418,8 @@ namespace SharpNet.Classes.NeuralNetworkTrainer
             epochCount = 0;
             evaluations.Clear();
 
+            initialiser.Initialise(Network);
+
             gradients = new FeedForwardLayer.Gradient[Network.Layers.Count];
             for (int i = 0; i < Network.Layers.Count; i++)
             {
