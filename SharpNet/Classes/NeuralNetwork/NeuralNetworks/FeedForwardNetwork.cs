@@ -11,10 +11,15 @@ namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
     /// A feedforward network which deterministically and independently produces an output vector
     /// when given an input vector.
     /// </summary>
-    public class FeedForwardNetwork : NeuralNetwork
+    public class FeedForwardNetwork : NeuralNetworkBase
     {
 
-        private List<FeedForwardLayer> layers = new List<FeedForwardLayer>();
+        private List<FeedForwardLayer> _layers = new List<FeedForwardLayer>();
+        public List<FeedForwardLayer> Layers
+        {
+            get { return _layers; }
+            private set { _layers = value; }
+        }
 
         /// <summary>
         /// Set up a feedforward network with the number of inputs and outputs.  Then add layers to
@@ -36,8 +41,8 @@ namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
         /// <returns></returns>
         public FeedForwardNetwork AddHiddenLayer(int nodes, ActivationFunction activation)
         {
-            layers.Add(new FeedForwardLayer.Dense(
-                (layers.Count == 0 ? Inputs : layers[layers.Count - 1].Outputs), nodes)
+            _layers.Add(new FeedForwardLayer.Dense(
+                (_layers.Count == 0 ? Inputs : _layers[_layers.Count - 1].Outputs), nodes)
             {
                 Activation = activation
             });
@@ -52,7 +57,7 @@ namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
         /// <returns></returns>
         public FeedForwardNetwork AddOutputLayer(ActivationFunction activation)
         {
-            layers.Add(new FeedForwardLayer.Dense(layers[layers.Count - 1].Outputs,
+            _layers.Add(new FeedForwardLayer.Dense(_layers[_layers.Count - 1].Outputs,
                 Outputs)
             {
                 Activation = activation
@@ -85,12 +90,12 @@ namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
         /// </summary>
         protected override void UpdateOutput()
         {
-            layers[0].Input = Input;
-            for (int i = 1; i < layers.Count; i++)
+            _layers[0].Input = Input;
+            for (int i = 1; i < _layers.Count; i++)
             {
-                layers[i].Input = layers[i - 1].Output;
+                _layers[i].Input = _layers[i - 1].Output;
             }
-            Output = layers[layers.Count - 1].Output;
+            Output = _layers[_layers.Count - 1].Output;
         }
 
     }
