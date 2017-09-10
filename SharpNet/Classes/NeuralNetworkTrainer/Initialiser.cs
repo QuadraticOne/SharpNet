@@ -1,4 +1,5 @@
 ﻿using SharpNet.Classes.Architecture.NetworkLayer.Layers;
+using SharpNet.Classes.Maths;
 using SharpNet.Classes.NeuralNetwork;
 using SharpNet.Classes.NeuralNetwork.NeuralNetworks;
 using System;
@@ -64,6 +65,39 @@ namespace SharpNet.Classes.NeuralNetworkTrainer
                             throw new NotImplementedException();
                         }
                     }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Allows the setting of custom weight matrices for easy testing.
+        /// </summary>
+        public class CustomTest : IInitialiser
+        {
+
+            private Matrix[] matrices;
+
+            /// <summary>
+            /// Create a new custom testing initialiser.
+            /// </summary>
+            /// <param name="matrices"></param>
+            public CustomTest(Matrix[] matrices)
+            {
+                this.matrices = matrices;
+            }
+
+            /// <summary>
+            /// Initialise the weights of a neural network.
+            /// </summary>
+            /// <param name="network"></param>
+            public void Initialise(NeuralNetworkBase network)
+            {
+                FeedForwardNetwork feedForward = (FeedForwardNetwork)network;
+                for (int i = 0; i < matrices.Length; i++)
+                {
+                    FeedForwardLayer.Dense layer = (FeedForwardLayer.Dense)feedForward.Layers[i];
+                    layer.Weights = matrices[i];
                 }
             }
 
