@@ -203,10 +203,6 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                     denseReference.Weights = denseReference.Weights -
                         (learningRate * weightDeltas);
 
-                    // &debug
-                    if (printed == printAt) Console.WriteLine(weightDeltas.ToDetailedString());
-                    printed++;
-
                     weightDeltas.Zero();
                     inputErrorDerivatives.Zero();
                     outputErrorDerivatives.Zero();
@@ -264,7 +260,8 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                         double inputErrorDerivative = 0;
                         for (int j = 0; j < thisLayer.Outputs; j++)
                         {
-                            inputErrorDerivative += denseReference.Weights[j, i] *
+                            // Add 1 to input index so that bias is skipped
+                            inputErrorDerivative += denseReference.Weights[j, i + 1] *
                                 preActivationOutputDerivatives[j] * outputErrorDerivatives[j];
                         }
                         inputErrorDerivatives[i] = inputErrorDerivative;
@@ -322,7 +319,8 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                         double inputErrorDerivative = 0;
                         for (int j = 0; j < thisLayer.Outputs; j++)  // j -> output neuron
                         {
-                            inputErrorDerivative += denseReference.Weights[j, i] *
+                            // Add 1 to input index so that bias is skipped
+                            inputErrorDerivative += denseReference.Weights[j, i + 1] *
                                 preActivationOutputDerivatives[j] * outputErrorDerivatives[j];
                         }
                         inputErrorDerivatives[i] = inputErrorDerivative;
