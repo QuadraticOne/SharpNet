@@ -135,7 +135,7 @@ namespace SharpNet.Classes.Maths
                     double dot = 0;
                     for (int k = 0; k < a.Columns; k++)
                     {
-                        dot += a[i, j] * b[k, j];
+                        dot += a[i, k] * b[k, j];
                     }
                     matrix[i, j] = dot;
                 }
