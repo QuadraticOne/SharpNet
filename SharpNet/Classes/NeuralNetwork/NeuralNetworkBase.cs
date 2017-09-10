@@ -11,7 +11,7 @@ namespace SharpNet.Classes.NeuralNetwork
     /// network is to take an input vector, and convert it to an output vector by some transform
     /// function.
     /// </summary>
-    public abstract class NeuralNetwork
+    public abstract class NeuralNetworkBase
     {
 
         public int Inputs { get; protected set; }
