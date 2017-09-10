@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpNet", "SharpNet\SharpNet.csproj", "{F2AE2CFB-8B89-4C84-B54C-F2576EA384C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpNet", "SharpNet\SharpNet.csproj", "{F2AE2CFB-8B89-4C84-B54C-F2576EA384C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpNetDebug", "SharpNetDebug\SharpNetDebug.csproj", "{8447DD2C-321B-401C-8958-4AB960D146EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpNetDebug", "SharpNetDebug\SharpNetDebug.csproj", "{8447DD2C-321B-401C-8958-4AB960D146EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpNetTest", "SharpNetTest\SharpNetTest.csproj", "{54B2CCC7-63F0-4BC7-9F1F-E07F0D7027B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{8447DD2C-321B-401C-8958-4AB960D146EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8447DD2C-321B-401C-8958-4AB960D146EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8447DD2C-321B-401C-8958-4AB960D146EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54B2CCC7-63F0-4BC7-9F1F-E07F0D7027B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54B2CCC7-63F0-4BC7-9F1F-E07F0D7027B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54B2CCC7-63F0-4BC7-9F1F-E07F0D7027B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54B2CCC7-63F0-4BC7-9F1F-E07F0D7027B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
