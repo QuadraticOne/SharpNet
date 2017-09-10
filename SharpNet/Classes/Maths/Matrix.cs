@@ -11,6 +11,30 @@ namespace SharpNet.Classes.Maths
     public class Matrix
     {
 
+        /// <summary>
+        /// Return a column matrix whose elements are equal to those of an array.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static Matrix ToColumnMatrix(double[] array)
+        {
+            Matrix matrix = new Matrix(array.Length, 1);
+            for (int i = 0; i < array.Length; i++) matrix[i, 0] = array[i];
+            return matrix;
+        }
+
+        /// <summary>
+        /// Return a row matrix whose elements are equal to those of an array.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static Matrix ToRowMatrix(double[] array)
+        {
+            Matrix matrix = new Matrix(1, array.Length);
+            for (int i = 0; i < array.Length; i++) matrix[0, 1] = array[i];
+            return matrix;
+        }
+
         private static Random random = new Random();
 
         /// <summary>
