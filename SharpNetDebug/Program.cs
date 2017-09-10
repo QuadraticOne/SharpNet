@@ -23,7 +23,8 @@ namespace SharpNetDebug
             Console.WriteLine("Debugging SharpNet.");
 
             #region DEBUG_CODE
-
+            FeedForwardLayer.Dense ffl = new FeedForwardLayer.Dense(4, 4);
+            //FeedForwardLayer.Dense.Gradient g = new FeedForwardLayer.Dense.Gradient();
             #endregion  // DEBUG_CODE
 
             Console.WriteLine("Debugging has finished.  Press ENTER to exit.");

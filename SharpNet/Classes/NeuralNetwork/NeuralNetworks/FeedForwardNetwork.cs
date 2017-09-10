@@ -36,7 +36,7 @@ namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
         /// <returns></returns>
         public FeedForwardNetwork AddHiddenLayer(int nodes, ActivationFunction activation)
         {
-            layers.Add(new FeedForwardLayer(
+            layers.Add(new FeedForwardLayer.Dense(
                 (layers.Count == 0 ? Inputs : layers[layers.Count - 1].Outputs), nodes)
             {
                 Activation = activation
@@ -52,7 +52,7 @@ namespace SharpNet.Classes.NeuralNetwork.NeuralNetworks
         /// <returns></returns>
         public FeedForwardNetwork AddOutputLayer(ActivationFunction activation)
         {
-            layers.Add(new FeedForwardLayer(layers[layers.Count - 1].Outputs,
+            layers.Add(new FeedForwardLayer.Dense(layers[layers.Count - 1].Outputs,
                 Outputs)
             {
                 Activation = activation
