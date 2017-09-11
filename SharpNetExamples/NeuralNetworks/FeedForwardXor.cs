@@ -57,7 +57,7 @@ namespace SharpNetExamples.NeuralNetworks
             BackpropagationTrainer trainer = new BackpropagationTrainer()
             {
                 // Set the learning rate
-                LearningRate = 0.07,
+                LearningRate = 0.09,
 
                 // Initialise network weights using a uniform distribution
                 initialiser = new Initialiser.Uniform(-0.2, 0.2, false),
@@ -72,11 +72,11 @@ namespace SharpNetExamples.NeuralNetworks
                 lossFunction = new LossFunction.SquaredError(),
 
                 // Log training data every 5000 epochs; access this with trainer.evaluations
-                evaluationFrequency = 5000
+                evaluationFrequency = 8000
             };
 
             // Add a termination condition to the trainer; it will stop after 50,000 epochs
-            trainer.terminationConditions.Add(new TerminationCondition.EpochLimit(50000));
+            trainer.terminationConditions.Add(new TerminationCondition.EpochLimit(80000));
 
             // Troubleshoot trainer (this will notify you of any missing required settings)
             foreach (string s in trainer.Troubleshoot()) Console.WriteLine();
