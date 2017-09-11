@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SharpNetExamples\SharpNetExamples.csproj" />
     <ProjectReference Include="..\SharpNet\SharpNet.csproj" />
   </ItemGroup>
 
