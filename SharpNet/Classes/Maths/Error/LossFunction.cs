@@ -47,6 +47,30 @@ namespace SharpNet.Classes.Maths.Error
 
         }
 
+        /// <summary>
+        /// Returns the negative natural logarithm of a probability, presumed to be between 0 and
+        /// 1.  It is assumed that the target is a one-hot vector.
+        /// </summary>
+        public class NegativeLogProb : ILossFunction
+        {
+
+            public double Error(Matrix output, Matrix target)
+            {
+                double total = 0;
+                for (int i = 0; i < output.Rows; i++)
+                {
+                    total -= target[i, 0] * Math.Log(output[i, 0]);
+                }
+                return total;
+            }
+
+            public double ErrorDerivative(Matrix output, Matrix target, int i)
+            {
+                return -target[i, 0] / output[i, 0];
+            }
+
+        }
+
     }
 
 }
