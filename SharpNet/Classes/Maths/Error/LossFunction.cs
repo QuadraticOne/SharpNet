@@ -71,6 +71,31 @@ namespace SharpNet.Classes.Maths.Error
 
         }
 
+        /// <summary>
+        /// Returns a loss value for a network which produces a single output value in the range
+        /// [0, 1] to classify between two classes.  The target is expected to be either a 1 or a
+        /// 0.  Hence a matrix with only one element is expected for both inputs.
+        /// </summary>
+        public class CrossEntropy : ILossFunction
+        {
+
+            public double Error(Matrix output, Matrix target)
+            {
+                return -(target[0, 0] * Math.Log(output[0, 0]) +
+                    (1 - target[0, 0]) * Math.Log(1 - output[0, 0]));
+            }
+
+            public double ErrorDerivative(Matrix output, Matrix target, int i)
+            {
+                if (i != 0) throw new ArgumentException(
+                    "Cross entropy loss function can only be used with one output.");
+
+                // TODO: check this
+                return ((target[0, 0] - 1) / (output[0, 0] - 1)) - (target[0, 0] / output[0, 0]);
+            }
+
+        }
+
     }
 
 }
