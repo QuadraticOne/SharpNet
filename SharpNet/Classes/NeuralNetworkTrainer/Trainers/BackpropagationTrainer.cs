@@ -298,6 +298,18 @@ namespace SharpNet.Classes.NeuralNetworkTrainer
         }
 
         /// <summary>
+        /// Evaluate the test loss of the network.
+        /// </summary>
+        /// <returns></returns>
+        public double TestLoss()
+        {
+            double error = 0;
+            foreach (DataPoint dataPoint in DataSet.TestSet)
+                error += Loss(dataPoint);
+            return error / DataSet.TestSet.Length;
+        }
+
+        /// <summary>
         /// Evaluate the network.  Output is an array of three doubles: epoch count, training 
         /// error, and validation error.
         /// </summary>

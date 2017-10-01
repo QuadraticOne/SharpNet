@@ -167,7 +167,7 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
             protected override void UpdateOutput()
             {
                 _preActivation = Weights * Input;
-                _output = _preActivation.ApplyPiecewiseFunction(Activation.Value);
+                _output = _activation.Output(_preActivation);
                 outputIsAccurate = true;
             }
 
@@ -240,16 +240,35 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                 {
                     // Rate of change of output with respect to corresponding pre-activation
                     Vector preActivationOutputDerivatives = new Vector(thisLayer.Outputs);
+                    for (int i = 0; i < preActivationOutputDerivatives.Length; i++)
+                        preActivationOutputDerivatives[i] = 0;
 
                     for (int i = 0; i < thisLayer.Outputs; i++)
                     {
                         // Calculate output error derivatives; since this is a hidden layer, these
                         // are equal to the input error derivatives of the next layer
                         outputErrorDerivatives[i] = nextLayerGradient.inputErrorDerivatives[i];
+                    }
 
-                        // Calculate pre-activation derivatives
-                        preActivationOutputDerivatives[i] = denseReference.Activation.Derivative(
-                            denseReference.PreActivation[i, 0], i);
+                    denseReference.Activation.Peek(denseReference.PreActivation);
+
+                    // Calculate the pre-activation partial derivatives
+                    if (denseReference.Activation.IsInterdependent()) {
+                        for (int i = 0; i < thisLayer.Outputs; i++)  // i -> pre-activation index
+                        {
+                            for (int j = 0; j < thisLayer.Outputs; j++)  // j -> output index
+                            {
+                                preActivationOutputDerivatives[i] =
+                                    preActivationOutputDerivatives[i] +
+                                    denseReference.Activation.Derivative(i, j);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < thisLayer.Outputs; i++)
+                            preActivationOutputDerivatives[i] =
+                                denseReference.Activation.Derivative(i, i);
                     }
 
                     for (int i = 0; i < thisLayer.Inputs; i++)
@@ -305,10 +324,28 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                         // is the error function derivative wrt. the ith output of this layer
                         outputErrorDerivatives[i] = lossFunction.ErrorDerivative(thisLayer.Output,
                             target, i);
+                    }
 
-                        // Calculate pre-activation derivatives
-                        preActivationOutputDerivatives[i] = denseReference.Activation.Derivative(
-                            denseReference.PreActivation[i, 0], i);
+                    denseReference.Activation.Peek(denseReference.PreActivation);
+
+                    // Calculate the pre-activation partial derivatives
+                    if (denseReference.Activation.IsInterdependent())
+                    {
+                        for (int i = 0; i < thisLayer.Outputs; i++)  // i -> pre-activation index
+                        {
+                            for (int j = 0; j < thisLayer.Outputs; j++)  // j -> output index
+                            {
+                                preActivationOutputDerivatives[i] =
+                                    preActivationOutputDerivatives[i] +
+                                    denseReference.Activation.Derivative(i, j);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < thisLayer.Outputs; i++)
+                            preActivationOutputDerivatives[i] =
+                                denseReference.Activation.Derivative(i, i);
                     }
 
                     for (int i = 0; i < thisLayer.Inputs; i++)  // i -> input neuron

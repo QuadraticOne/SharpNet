@@ -28,7 +28,7 @@ namespace SharpNetDebug
 
             #region DEBUG_CODE
 
-            FeedForwardXor xor = new FeedForwardXor();
+            FeedForwardRegression reg = new FeedForwardRegression();
 
             #endregion  // DEBUG_CODE
 
