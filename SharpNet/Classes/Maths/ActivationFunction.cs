@@ -13,69 +13,81 @@ namespace SharpNet.Classes.Maths
     public abstract class ActivationFunction
     {
 
-        /// <summary>
-        /// Return the value of the activation function at x.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <returns></returns>
-        public abstract double Value(double x);
+        private Matrix preActivation;
 
         /// <summary>
-        /// Return the derivative of the activation function at x.
+        /// Show the pre-activation vector to the activation function.  Any necessary work should
+        /// be done here, such as finding the sum of the pre-activations, etc.  Calling the base
+        /// method will save the pre-activation matrix to the variable `preActivation`.
         /// </summary>
-        /// <param name="x"></param>
-        /// <returns></returns>
-        public abstract double Derivative(double x);
-
-        /// <summary>
-        /// Show the activation function the pre-activation of the current row, allowing the
-        /// activation function to calculate any necessary values from it.  This is useful for
-        /// functions for which the output value or derivative may depend on the rest of the layer,
-        /// such as the softmax function.
-        /// </summary>
-        /// <param name="m"></param>
-        public virtual void SetPreActivation(Matrix m) { }  // Empty by default
-
-        /// <summary>
-        /// Return the activated value of the ith element in the pre-activation vector.  This is
-        /// only necessary for functions which take the whole pre-activation vector as input.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="i"></param>
-        /// <returns></returns>
-        public virtual double Value(double x, int i)
+        /// <param name="preActivation"></param>
+        public virtual void Peek(Matrix preActivation)
         {
-            return Value(x);
+            this.preActivation = preActivation;
         }
 
         /// <summary>
-        /// Return the derivative of the ith element in the pre-activation vector with respect to
-        /// its output.  This is only necessary for functions which take the whole pre-activation
-        /// vector as input.
+        /// Calculate the value of the ith output given the ith element of the pre-activation
+        /// vector.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="i"></param>
+        /// <param name="inputIndex"></param>
         /// <returns></returns>
-        public virtual double Derivative(double x, int i)
+        public abstract double Value(int inputIndex);
+
+        /// <summary>
+        /// Calculate the partial derivative of the given output index with respect to the given
+        /// input index.  If outputs are independent of the pre-activation of other nodes, simply
+        /// include `if (inputIndex != outputIndex) return 0`.
+        /// </summary>
+        /// <param name="inputIndex"></param>
+        /// <param name="outputIndex"></param>
+        /// <returns></returns>
+        public abstract double Derivative(int inputIndex, int outputIndex);
+
+        /// <summary>
+        /// Calculate the output vector given a pre-activation vector.  This automatically calls
+        /// Peek() on the pre-activation vector.
+        /// </summary>
+        /// <param name="preActivation"></param>
+        /// <returns></returns>
+        public Matrix Output(Matrix preActivation)
         {
-            return Derivative(x);
+            Peek(preActivation);
+            Matrix m = new Matrix(preActivation.Rows, preActivation.Columns);
+
+            for (int i = 0; i < m.Rows; i++) m[i, 0] = Value(i);
+
+            return m;
         }
 
         /// <summary>
-        /// Maps inputs to the range (0, 1).  Approximately linear at the origin.
+        /// Should return true iff the output of a node depends on the pre-activation of any node
+        /// other than itself.  For example, for Softmax this is true, but for Relu this is false.
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool IsInterdependent();
+
+        #region ACTIVATION_FUNCTIONS
+
+        /// <summary>
+        /// A continuous activation function which squashes inputs to the range (0, 1) and is
+        /// approximately linear near the origin.
         /// </summary>
         public class Sigmoid : ActivationFunction
         {
 
-            public override double Value(double x)
+            public override double Value(int inputIndex)
             {
-                return 1 / (1 + Math.Exp(-x));
+                return 1 / (1 + Math.Exp(-preActivation[inputIndex, 0]));
             }
 
-            public override double Derivative(double x)
+            public override double Derivative(int inputIndex, int outputIndex)
             {
-                return Value(x) * (1 - Value(x));
+                if (inputIndex != outputIndex) return 0;
+                return Value(inputIndex) * (1 - Value(inputIndex));
             }
+
+            public override bool IsInterdependent() => false;
 
         }
 
@@ -85,17 +97,60 @@ namespace SharpNet.Classes.Maths
         public class Relu : ActivationFunction
         {
 
-            public override double Value(double x)
+            public override double Value(int inputIndex)
             {
-                return Math.Max(0, x);
+                if (preActivation[inputIndex, 0] > 0) return preActivation[inputIndex, 0];
+                return 0;
             }
 
-            public override double Derivative(double x)
+            public override double Derivative(int inputIndex, int outputIndex)
             {
-                return (x < 0) ? 0 : 1;
+                if (inputIndex != outputIndex) return 0;
+                if (preActivation[inputIndex, 0] > 0) return 1;
+                return 0;
             }
+
+            public override bool IsInterdependent() => false;
 
         }
+
+        /// <summary>
+        /// Squashes each value to the range [0, 1] and ensures that the output vector sums to 1.
+        /// </summary>
+        public class Softmax : ActivationFunction
+        {
+
+            // The sum of the exponentiated values of the pre-activation vector
+            private double sum = 0;
+
+            public override void Peek(Matrix preActivation)
+            {
+                sum = 0;
+                for (int i = 0; i < preActivation.Rows; i++) sum += Math.Exp(preActivation[i, 0]);
+            }
+
+            public override double Value(int inputIndex)
+            {
+                return Math.Exp(preActivation[inputIndex, 0]) / sum;
+            }
+
+            public override double Derivative(int inputIndex, int outputIndex)
+            {
+                if (inputIndex == outputIndex)
+                {
+                    return Value(inputIndex) * (1 - Value(inputIndex));
+                }
+                else
+                {
+                    return -Value(inputIndex) * Value(outputIndex);
+                }
+            }
+
+            public override bool IsInterdependent() => true;
+
+        }
+
+        #endregion  // ACTIVATION_FUNCTIONS
 
     }
 
