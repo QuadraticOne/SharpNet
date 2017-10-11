@@ -125,6 +125,7 @@ namespace SharpNet.Classes.Maths
 
             public override void Peek(Matrix preActivation)
             {
+                this.preActivation = preActivation;
                 sum = 0;
                 for (int i = 0; i < preActivation.Rows; i++) sum += Math.Exp(preActivation[i, 0]);
             }
@@ -138,7 +139,7 @@ namespace SharpNet.Classes.Maths
             {
                 if (inputIndex == outputIndex)
                 {
-                    return Value(inputIndex) * (1 - Value(inputIndex));
+                    return Value(inputIndex) * (1 - Value(inputIndex));  // &starthere - these always cancel out to zero, except rounding errors
                 }
                 else
                 {
