@@ -28,7 +28,7 @@ namespace SharpNetDebug
 
             #region DEBUG_CODE
 
-            FeedForwardRegression reg = new FeedForwardRegression();
+            FeedForwardClassification classification = new FeedForwardClassification();
 
             #endregion  // DEBUG_CODE
 
