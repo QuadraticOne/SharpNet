@@ -315,8 +315,8 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                 public override void Backpropagate(Matrix target, ILossFunction lossFunction,
                     List<IRegulariser> regularisers)
                 {
-                    // Rate of change of output with respect to corresponding pre-activation
-                    Vector preActivationOutputDerivatives = new Vector(thisLayer.Outputs);
+                    // Rate of change of the loss with respect to each pre-activation
+                    Vector preActivationErrorDerivatives = new Vector(thisLayer.Outputs);
 
                     for (int i = 0; i < thisLayer.Outputs; i++)
                     {
@@ -335,17 +335,19 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                         {
                             for (int j = 0; j < thisLayer.Outputs; j++)  // j -> output index
                             {
-                                preActivationOutputDerivatives[i] =
-                                    preActivationOutputDerivatives[i] +
-                                    denseReference.Activation.Derivative(i, j);
+                                preActivationErrorDerivatives[i] =
+                                    preActivationErrorDerivatives[i] +
+                                    denseReference.Activation.Derivative(i, j) *
+                                    outputErrorDerivatives[j];
                             }
                         }
                     }
                     else
                     {
                         for (int i = 0; i < thisLayer.Outputs; i++)
-                            preActivationOutputDerivatives[i] =
-                                denseReference.Activation.Derivative(i, i);
+                            preActivationErrorDerivatives[i] =
+                                denseReference.Activation.Derivative(i, i) *
+                                outputErrorDerivatives[i];
                     }
 
                     for (int i = 0; i < thisLayer.Inputs; i++)  // i -> input neuron
@@ -358,7 +360,7 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
                         {
                             // Add 1 to input index so that bias is skipped
                             inputErrorDerivative += denseReference.Weights[j, i + 1] *
-                                preActivationOutputDerivatives[j] * outputErrorDerivatives[j];
+                                preActivationErrorDerivatives[j];
                         }
                         inputErrorDerivatives[i] = inputErrorDerivative;
                     }
@@ -376,7 +378,7 @@ namespace SharpNet.Classes.Architecture.NetworkLayer.Layers
 
                             weightDeltas[i, j] = weightDeltas[i, j] +
                                 outputErrorDerivatives[i] *
-                                preActivationOutputDerivatives[i] *
+                                preActivationErrorDerivatives[i] *
                                 thisLayer.Input[j, 0] + regulariserDelta;
                         }
                     }
