@@ -24,7 +24,7 @@ namespace SharpNet.Classes.Data
         
         private Queue<DataPoint> unassigned = new Queue<DataPoint>();
         private Random random = new Random();
-
+        
         /// <summary>
         /// Base constructor; sets up set arrays.
         /// </summary>
@@ -279,6 +279,42 @@ namespace SharpNet.Classes.Data
             public void AddDataPoint(double[] input, int category)
             {
                 unassigned.Enqueue(new DataPoint(input, category));
+            }
+
+            /// <summary>
+            /// Set all data points in the set to have one-hot outputs.
+            /// </summary>
+            public void OneHotAll()
+            {
+                HashSet<int> categories = new HashSet<int>();
+                foreach (DataPoint dataPoint in unassigned)
+                {
+                    if (!categories.Contains(dataPoint.category))
+                        categories.Add(dataPoint.category);
+                }
+
+                foreach (DataPoint dataPoint in TrainingSet)
+                {
+                    if (!categories.Contains(dataPoint.category))
+                        categories.Add(dataPoint.category);
+                }
+
+                foreach (DataPoint dataPoint in ValidationSet)
+                {
+                    if (!categories.Contains(dataPoint.category))
+                        categories.Add(dataPoint.category);
+                }
+
+                foreach (DataPoint dataPoint in TestSet)
+                {
+                    if (!categories.Contains(dataPoint.category))
+                        categories.Add(dataPoint.category);
+                }
+
+                foreach (DataPoint dataPoint in unassigned) dataPoint.OneHot(categories.Count);
+                foreach (DataPoint dataPoint in TrainingSet) dataPoint.OneHot(categories.Count);
+                foreach (DataPoint dataPoint in ValidationSet) dataPoint.OneHot(categories.Count);
+                foreach (DataPoint dataPoint in TestSet) dataPoint.OneHot(categories.Count);
             }
 
         }

@@ -9,7 +9,7 @@ namespace SharpNet.Classes.Data
     /// Stores supervised or unsupervised training examples for regression, classification, or
     /// unsupervised learning.
     /// </summary>
-    public struct DataPoint
+    public class DataPoint
     {
 
         public double[] input;
@@ -52,6 +52,17 @@ namespace SharpNet.Classes.Data
             this.input = input;
             output = null;
             category = -1;  // -1 denotes no class
+        }
+
+        /// <summary>
+        /// Assuming the data point has a category, sets the output to be a one-hot vector
+        /// representing that category given the total number of categories.
+        /// </summary>
+        /// <param name="categories"></param>
+        public void OneHot(int categories)
+        {
+            output = new double[categories];
+            output[category] = 1.0;
         }
 
     }
