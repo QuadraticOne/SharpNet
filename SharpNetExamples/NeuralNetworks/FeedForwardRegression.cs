@@ -33,8 +33,8 @@ namespace SharpNetExamples.NeuralNetworks
 
             // Create the data set
 
-            // Frame the problem as a regression problem; two inputs (x, y) and one output (z)
-            DataSet.Regression dataSet = new DataSet.Regression(2, 1);
+            // Frame the problem as a regression problem; one input (x) and one output (y)
+            DataSet.Regression dataSet = new DataSet.Regression(1, 1);
 
             // Populate data set - data point takes a double array for inputs and outputs
             Random random = new Random(421);
@@ -52,7 +52,7 @@ namespace SharpNetExamples.NeuralNetworks
 
             // Create feedforward network
 
-            // Create a network with two inputs and one output
+            // Create a network with one input and one output
             FeedForwardNetwork network = new FeedForwardNetwork(1, 1);
 
             // Add five hidden nodes, and connect them to the output layer using sigmoid activation
@@ -86,7 +86,7 @@ namespace SharpNetExamples.NeuralNetworks
                 evaluationFrequency = 50
             };
 
-            // Add a termination condition to the trainer; it will stop after 50,000 epochs
+            // Add a termination condition to the trainer; it will stop after 1200 epochs
             trainer.terminationConditions.Add(new TerminationCondition.EpochLimit(1200));
 
             // Troubleshoot trainer (this will notify you of any missing required settings)
